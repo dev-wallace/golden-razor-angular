@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -9,17 +9,27 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isMenuOpen = false;
-  isMobile = window.innerWidth < 768;
+  isMobile = false;
 
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    this.isMobile = window.innerWidth < 768;
-    if (!this.isMobile) this.isMenuOpen = false;
+  ngOnInit(): void {
+    this.checkViewport();
   }
 
-  toggleMenu() {
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkViewport();
+  }
+
+  checkViewport(): void {
+    this.isMobile = window.innerWidth < 768;
+    if (!this.isMobile) {
+      this.isMenuOpen = false;
+    }
+  }
+
+  toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 }

@@ -1,49 +1,53 @@
-@import '../../../assets/styles/variables.scss';
-
-.menu {
-  display: flex;
-  justify-content: space-around;
-  color: var(--cor-de-title);
-  background: #1f1a11;
+:host {
+  display: block;
   width: 100%;
 }
 
 .header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  width: 15em;
-  
-  img {
-    width: 150px;
-    height: 90px;
-    margin: 0 10px;
-  }
+  background: #1f1a11;
+  padding: 10px 20px;
+}
+
+.header img {
+  width: 150px;
+  height: 90px;
+}
+
+.nav-desktop {
+  display: flex;
 }
 
 .menu__list {
   display: flex;
   align-items: center;
-  
-  &__item {
-    margin: 0 10px;
-    
-    a {
-      font-family: "Red Hat Text", sans-serif;
-      font-size: 16px;
-      font-weight: 900;
-      color: #d1b24a;
-      padding: 14px 12px;
-      
-      &:hover {
-        color: #d6a400;
-        font-size: 16.4px;
-        transition: 0.5s all;
-      }
-    }
-    
-    &__contato {
-      display: flex;
-    }
-  }
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu__list__item {
+  margin: 0 10px;
+}
+
+.menu__list a {
+  font-family: "Red Hat Text", Sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: #d1b24a;
+  padding: 14px 12px;
+  transition: 0.5s all;
+}
+
+.menu__list a:hover {
+  color: #d6a400;
+  font-size: 16.4px;
+}
+
+.menu__list__item-contato {
+  display: flex;
 }
 
 .menu-btn {
@@ -51,49 +55,48 @@
   cursor: pointer;
   color: var(--cor-de-title);
   display: none;
-  position: fixed;
-  top: 20px;
-  right: 20px;
   z-index: 3;
 }
 
 .sidebar {
   display: none;
-  position: fixed;
-  left: -250px;
-  top: 0;
-  width: 250px;
-  height: 100%;
-  background: #111;
-  z-index: 2;
-  transition: left 0.3s ease;
-  
-  &.active {
-    left: 0;
-  }
-  
-  a {
-    display: block;
-    color: #ddd;
-    padding: 15px;
-    text-decoration: none;
-    
-    &:hover {
-      background: #333;
-    }
-  }
 }
 
+/* Responsividade */
 @media (max-width: 768px) {
-  .menu__list {
-    display: none;
-  }
-  
   .menu-btn {
     display: block;
   }
-  
+
+  .nav-desktop {
+    display: none;
+  }
+
   .sidebar {
-    display: block;
+    flex-direction: column;
+    background: #1f1a11;
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    padding: 2rem;
+    z-index: 2;
+    display: none;
+  }
+
+  .sidebar.active {
+    display: flex;
+  }
+
+  .sidebar a {
+    color: #d1b24a;
+    font-size: 18px;
+    padding: 10px 0;
+    text-decoration: none;
+  }
+
+  .sidebar a:hover {
+    color: #d6a400;
   }
 }
