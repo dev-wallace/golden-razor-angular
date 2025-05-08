@@ -15,31 +15,29 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/golden-razor",
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "main": "src/main.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+                "output": "/webfonts/"
               }
             ],
             "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+  "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+  "src/assets/styles/styles.scss"
+]
+,
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -55,7 +53,10 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false
             },
             "development": {
               "optimization": false,
@@ -63,7 +64,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -83,18 +84,10 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/styles.scss"
             ],

@@ -1,0 +1,26 @@
+@import 'variables';
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+  background-color: var(--cor-de-fundo);
+  line-height: 1;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+::placeholder {
+  font-family: 'Raleway';
+  font-size: 12px;
+  font-weight: 400;
+}
+

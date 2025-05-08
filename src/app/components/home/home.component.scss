@@ -1,0 +1,46 @@
+@import '../../../assets/styles/variables.scss';
+.box-inicio {
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../../../assets/images/haircut-start.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.img-text {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  
+  img {
+    width: 37vw;
+    max-height: 60vh;
+    margin: 0;
+    transform: rotate(13deg);
+  }
+}
+
+.button-agendar-inicio {
+  font-family: "Zen Antique Soft", sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  padding: 7px 70px;
+  max-width: 500px;
+  color: white;
+  background: var(--cor-de-button);
+  border-radius: 5px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.67);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 35px;
+  
+  &:hover {
+    background: #cc9827;
+    box-shadow: 4px 4px 8px #caa148;
+    border: 1px solid white;
+    transform: translateY(-2px);
+  }
+}

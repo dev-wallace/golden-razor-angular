@@ -1,0 +1,25 @@
+<header class="header">
+  <img src="assets/GoldenRazor_logo.png" alt="Logo" routerLink="">
+</header>
+
+<nav>
+  <ul class="menu__list">
+    <li class="menu__list__item"><a routerLink="" routerLinkActive="active">Início</a></li>
+    <li class="menu__list__item"><a routerLink="sobre" routerLinkActive="active">Sobre</a></li>
+    <li class="menu__list__item"><a routerLink="servicos" routerLinkActive="active">Serviços</a></li>
+    <li class="menu__list__item"><a routerLink="galeria" routerLinkActive="active">Galeria</a></li>
+    <li class="menu__list__item menu__list__item-contato">
+      <a routerLink="contato" routerLinkActive="active">Contato</a>
+    </li>
+  </ul>
+</nav>
+
+<span class="menu-btn" (click)="toggleMenu()">☰</span>
+
+<div class="sidebar" *ngIf="isMobile" [class.active]="isMenuOpen">
+  <a routerLink="" (click)="toggleMenu()">Início</a>
+  <a routerLink="sobre" (click)="toggleMenu()">Sobre</a>
+  <a routerLink="servicos" (click)="toggleMenu()">Serviços</a>
+  <a routerLink="galeria" (click)="toggleMenu()">Galeria</a>
+  <a routerLink="contato" (click)="toggleMenu()">Contato</a>
+</div>

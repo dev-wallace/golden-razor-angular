@@ -1,0 +1,51 @@
+<div class="user-panel-container">
+  <section class="profile-section">
+    <h2>Meu Perfil</h2>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" formControlName="nome">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" formControlName="email">
+      </div>
+      
+      <div class="form-group">
+        <label for="telefone">Telefone</label>
+        <input type="tel" id="telefone" formControlName="telefone">
+      </div>
+      
+      <button type="submit" class="save-button">Salvar Alterações</button>
+    </form>
+  </section>
+
+  <section class="appointments-section">
+    <h2>Meus Agendamentos</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Serviço</th>
+          <th>Data</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (appointment of appointments; track appointment.service) {
+          <tr>
+            <td>{{ appointment.service }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.status }}</td>
+            <td>
+              @for (action of appointment.actions; track action) {
+                <button class="action-button">{{ action }}</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>
