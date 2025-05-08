@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-services',
   standalone: true,
@@ -13,17 +14,17 @@ export class ServicesComponent {
     {
       title: 'CORTE',
       price: 'R$ 110.00',
-      image: 'assets/cabelo-homem-corte.avif'
+      image: '/assets/cabelo-homem-corte.avif'
     },
     {
       title: 'BARBA',
       price: 'R$ 40.00',
-      image: 'assets/cortador-de-barba.avif'
+      image: '/assets/cortador-de-barba.avif'
     },
     {
       title: 'CORTE + BARBA',
       price: 'R$ 140.00',
-      image: 'assets/cabeloEbarba.avif'
+      image: '/assets/cabeloEbarba.avif'
     }
   ];
 }
