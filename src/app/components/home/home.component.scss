@@ -1,4 +1,9 @@
 @import '../../../assets/styles/variables.scss';
+
+/* Importação correta do Swiper */
+@import 'swiper/swiper-bundle.css';
+
+/* Estilos da seção inicial */
 .box-inicio {
   width: 100%;
   height: 80vh;
@@ -8,39 +13,244 @@
   background-image: url('../../../assets/images/haircut-start.jpg');
   background-size: cover;
   background-position: center;
-}
 
-.img-text {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  
-  img {
-    width: 37vw;
-    max-height: 60vh;
-    margin: 0;
-    transform: rotate(13deg);
+  .img-text {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    
+    img {
+      width: 37vw;
+      max-height: 60vh;
+      margin: 0;
+      transform: rotate(13deg);
+    }
+  }
+
+  .button-agendar-inicio {
+    font-family: "Zen Antique Soft", sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    padding: 7px 70px;
+    max-width: 500px;
+    color: white;
+    background: var(--cor-de-button);
+    border-radius: 5px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.67);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 35px;
+    
+    &:hover {
+      background: #cc9827;
+      box-shadow: 4px 4px 8px rgba(204, 152, 39, 0.6);
+      border: 1px solid white;
+      transform: translateY(-2px);
+    }
   }
 }
 
-.button-agendar-inicio {
-  font-family: "Zen Antique Soft", sans-serif;
-  font-size: 24px;
-  font-weight: 900;
-  padding: 7px 70px;
-  max-width: 500px;
+/* Estilos da seção sobre */
+.sobre {
+  margin: 40px auto;
+  max-width: 1250px;
+  padding: 20px;
+  font-family: "Roboto Condensed", sans-serif;
+
+  .container-sobre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .imagem-sobre {
+    flex: 1;
+    max-width: 500px;
+    height: 71vh;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+
+    @media (max-width: 768px) {
+      height: auto;
+      width: 100%;
+    }
+  }
+
+  .texto {
+    flex: 1;
+    max-width: 500px;
+    
+    h2 {
+      color: var(--cor-de-button);
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    p {
+      color: #131313;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+/* Estilos da galeria */
+.galeria {
+  position: relative;
+  padding: 60px 20px;
+  background: rgba(0, 0, 0, 0.9);
   color: white;
-  background: var(--cor-de-button);
-  border-radius: 5px;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.67);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 35px;
-  
-  &:hover {
-    background: #cc9827;
-    box-shadow: 4px 4px 8px #caa148;
-    border: 1px solid white;
-    transform: translateY(-2px);
+  text-align: center;
+
+  h2 {
+    color: var(--cor-de-button);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 0 auto 40px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .swiper {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 0 auto;
+
+    &-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    }
+
+    &-button-prev,
+    &-button-next {
+      color: var(--cor-de-button);
+      
+      &::after {
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+
+    &-pagination-bullet {
+      background: var(--cor-de-button);
+    }
+  }
+
+  .button-agendar {
+    font-family: "Zen Antique Soft", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 12px 40px;
+    background: var(--cor-de-button);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 30px;
+    display: inline-block;
+
+    &:hover {
+      background: #b8874a;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(204, 152, 39, 0.4);
+    }
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .box-inicio {
+    height: 60vh;
+    
+    .img-text img {
+      width: 80vw;
+      max-height: 40vh;
+    }
+  }
+
+  .galeria {
+    .swiper {
+      height: 300px;
+    }
+  }
+}
+.galeria {
+  /* ... (mantenha seus estilos existentes) ... */
+
+  .swiper {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    margin: 0 auto;
+
+    &-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    }
+
+    &-button-next,
+    &-button-prev {
+      color: var(--cor-de-button);
+      width: 40px;
+      height: 40px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      
+      &::after {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      
+      &:hover {
+        background: var(--cor-de-button);
+        color: white;
+      }
+    }
+
+    &-pagination {
+      &-bullet {
+        background: white;
+        opacity: 0.5;
+        
+        &-active {
+          background: var(--cor-de-button);
+          opacity: 1;
+        }
+      }
+    }
   }
 }
