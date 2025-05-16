@@ -1,25 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-user-panel',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], // Adicione esta linha
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
   templateUrl: './user-panel.component.html',
   styleUrls: ['./user-panel.component.scss']
 })
-export class UserPanelComponent {
+export class UserPanelComponent implements OnInit {
   profileForm = new FormGroup({
-    nome: new FormControl('João Silva', Validators.required),
-    email: new FormControl('joao@example.com', [Validators.required, Validators.email]),
-    telefone: new FormControl('(11) 99999-9999', Validators.required)
+    nome: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    telefone: new FormControl('', Validators.required)
   });
 
   appointments = [
-    { service: 'Corte de Cabelo', date: '2023-12-15', status: 'Confirmado' },
-    { service: 'Barba', date: '2023-12-20', status: 'Pendente' }
+    { service: 'Corte de Cabelo', date: new Date(), status: 'Confirmado' },
+    { service: 'Barba', date: new Date(), status: 'Pendente' }
   ];
 
   serviceTypes = [
@@ -28,15 +30,45 @@ export class UserPanelComponent {
     { value: 'corte-barba', label: 'Corte e Barba' }
   ];
 
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.profileForm.patchValue({
+      nome: currentUser.name,
+      email: currentUser.email,
+      telefone: currentUser.phone || ''
+    });
+  }
+
   onSubmitProfile() {
     if (this.profileForm.valid) {
-      console.log('Perfil atualizado:', this.profileForm.value);
-      // Adicione lógica de atualização aqui
+      // Atualizar dados do usuário
+      const updatedUser = {
+        ...this.authService.getCurrentUser(),
+        name: this.profileForm.value.nome!,
+        email: this.profileForm.value.email!,
+        phone: this.profileForm.value.telefone || undefined
+      };
+
+      // Aqui você implementaria a atualização no AuthService
+      console.log('Perfil atualizado:', updatedUser);
     }
   }
 
   onSubmitPreferences() {
     console.log('Preferências atualizadas');
-    // Adicione lógica de atualização aqui
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

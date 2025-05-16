@@ -1,7 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
+interface RegisterResponse {
+  success: boolean;
+  message?: string;
+  user?: any;
+}
 
 @Component({
   selector: 'app-register',
@@ -11,6 +19,8 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+  isLoading = false;
+
   registerForm = new FormGroup({
     nome: new FormControl('', [
       Validators.required,
@@ -30,10 +40,53 @@ export class RegisterComponent {
     ])
   });
 
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
+
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log('Formulário válido:', this.registerForm.value);
-      // Lógica de cadastro aqui
+      this.isLoading = true;
+      
+      const userData = {
+        name: this.registerForm.value.nome!,
+        email: this.registerForm.value.email!,
+        phone: this.registerForm.value.telefone || undefined,
+        password: this.registerForm.value.senha!
+      };
+
+      this.authService.register(userData).subscribe({
+        next: (response: RegisterResponse) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.showSuccess('Cadastro realizado com sucesso!');
+            this.router.navigate(['/login']);
+          } else {
+            this.showError(response.message || 'Erro ao cadastrar');
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.showError('Erro ao conectar com o servidor');
+          console.error('Erro no registro:', error);
+        }
+      });
     }
+  }
+
+  private showSuccess(message: string): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 5000,
+      panelClass: ['success-snackbar']
+    });
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 }

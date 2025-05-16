@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -15,10 +17,41 @@ export class LoginComponent {
     password: new FormControl('', Validators.required)
   });
 
+  isLoading = false;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
+
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Login data:', this.loginForm.value);
-      // Implementar lógica de login
+      this.isLoading = true;
+      const { email, password } = this.loginForm.value;
+
+      this.authService.login(email!, password!).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.router.navigate(['/user']); // Ou '/area-do-usuario'
+          } else {
+            this.showError(response.message || 'Email ou senha incorretos');
+          }
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.showError('Erro ao tentar fazer login');
+          console.error('Login error:', err);
+        }
+      });
     }
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 }
