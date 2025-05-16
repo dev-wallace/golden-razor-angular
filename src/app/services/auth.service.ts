@@ -21,6 +21,9 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
+    isLoggedIn() {
+        throw new Error('Method not implemented.');
+    }
   private currentUser: User | null = null;
 
   constructor(private router: Router) {
@@ -140,6 +143,7 @@ updateUser(updatedUser: User): Observable<AuthResponse> {
   private getUsers(): User[] {
     return JSON.parse(localStorage.getItem('users') || '[]');
   }
+  
 
   private generateId(users: User[]): number {
     return users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
