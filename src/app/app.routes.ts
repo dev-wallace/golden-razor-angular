@@ -7,6 +7,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
+import { BarberPanelComponent } from './components/barber-panel/barber-panel.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,7 +16,8 @@ export const routes: Routes = [
   { path: 'galeria', component: GalleryComponent },
   { path: 'contato', component: ContactComponent },
   { path: 'login', component: LoginComponent },
+  {path: 'barber', component: BarberPanelComponent},
   { path: 'cadastro', component: RegisterComponent },
-  { path: 'area-do-usuario', component: UserPanelComponent },
+  { path: 'user', component: UserPanelComponent },
   { path: '**', redirectTo: '' }
 ];

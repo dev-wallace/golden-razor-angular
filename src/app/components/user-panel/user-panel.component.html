@@ -1,51 +1,73 @@
-<div class="user-panel-container">
-  <section class="profile-section">
-    <h2>Meu Perfil</h2>
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
-      <div class="form-group">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" formControlName="nome">
-      </div>
-      
-      <div class="form-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" formControlName="email">
-      </div>
-      
-      <div class="form-group">
-        <label for="telefone">Telefone</label>
-        <input type="tel" id="telefone" formControlName="telefone">
-      </div>
-      
-      <button type="submit" class="save-button">Salvar Alterações</button>
-    </form>
-  </section>
+<div class="container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="assets/GoldenRazor_logo.png" alt="Golden Razor Logo">
+      <h1>Golden Razor</h1>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#perfil"><i class="fas fa-user-circle"></i> Meu Perfil</a></li>
+        <li><a href="#agendamentos"><i class="fas fa-calendar-check"></i> Agendamentos</a></li>
+        <li><a href="#preferencias"><i class="fas fa-sliders-h"></i> Preferências</a></li>
+        <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+      </ul>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <section id="perfil" class="section">
+      <h2>Meu Perfil</h2>
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
+        <div class="input-group">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" formControlName="nome">
+        </div>
+        <div class="input-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" formControlName="email">
+        </div>
+        <div class="input-group">
+          <label for="telefone">Telefone</label>
+          <input type="text" id="telefone" formControlName="telefone">
+        </div>
+        <button type="submit" class="btn-primary">Salvar Alterações</button>
+      </form>
+    </section>
 
-  <section class="appointments-section">
-    <h2>Meus Agendamentos</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Serviço</th>
-          <th>Data</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (appointment of appointments; track appointment.service) {
-          <tr>
-            <td>{{ appointment.service }}</td>
-            <td>{{ appointment.date }}</td>
-            <td>{{ appointment.status }}</td>
-            <td>
-              @for (action of appointment.actions; track action) {
-                <button class="action-button">{{ action }}</button>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </section>
+    <section id="agendamentos" class="section">
+      <h2>Meus Agendamentos</h2>
+      <div class="agendamentos-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Serviço</th>
+              <th>Data</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of appointments">
+              <td>{{ app.service }}</td>
+              <td>{{ app.date | date:'dd/MM/yyyy' }}</td>
+              <td><span class="status" [ngClass]="app.status.toLowerCase()">{{ app.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn-primary" routerLink="/agendar">Agendar Novo Serviço</button>
+    </section>
+
+    <section id="preferencias" class="section">
+      <h2>Minhas Preferências</h2>
+      <form (ngSubmit)="onSubmitPreferences()">
+        <div class="input-group">
+          <label for="tipo-servico">Tipo de Serviço Preferido</label>
+          <select id="tipo-servico">
+            <option *ngFor="let type of serviceTypes" [value]="type.value">{{ type.label }}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary">Salvar Preferências</button>
+      </form>
+    </section>
+  </main>
 </div>

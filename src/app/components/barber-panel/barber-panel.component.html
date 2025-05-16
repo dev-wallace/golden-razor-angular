@@ -1,0 +1,116 @@
+<div class="admin-panel">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="branding">
+      
+      <h1 class="title">Golden Razor - Painel Admin</h1>
+    </div>
+    
+    <nav class="admin-nav">
+      <a routerLink="/clientes" fragment="clientes" class="nav-link">Clientes</a>
+      <a routerLink="/barbeiros" fragment="barbeiros" class="nav-link">Barbeiros</a>
+    </nav>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="admin-content">
+    <!-- Seção de Clientes -->
+    <section class="management-section" id="clientes">
+      <h2 class="section-title">Gestão de Clientes</h2>
+      
+      <div class="table-responsive">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of ['ID', 'Nome', 'Email', 'Telefone', 'Ações']">{{ header }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of clients">
+              <td>{{ client.id }}</td>
+              <td>{{ client.nome }}</td>
+              <td>{{ client.email }}</td>
+              <td>{{ client.telefone }}</td>
+              <td>
+                <button class="action-btn danger" (click)="deleteClient(client.id)">
+                  <i class="fas fa-trash"></i> Excluir
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Seção de Barbeiros -->
+    <section class="management-section" id="barbeiros">
+      <h2 class="section-title">Gestão de Barbeiros</h2>
+
+      <!-- Formulário de Adição -->
+      <form [formGroup]="barberForm" (ngSubmit)="addBarber()" class="barber-form">
+        <div class="form-group">
+          <label for="nome-barbeiro">Nome do Barbeiro:</label>
+          <input type="text" id="nome-barbeiro" formControlName="nome" 
+                 placeholder="Digite o nome completo">
+          <button type="submit" class="action-btn primary" [disabled]="barberForm.invalid">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
+      </form>
+
+      <!-- Tabela de Barbeiros -->
+      <div class="table-responsive">
+        <table class="management-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let barber of barbers">
+              <td>{{ barber.id }}</td>
+              <td>{{ barber.nome }}</td>
+              <td>
+                <div class="action-group">
+                  <button class="action-btn warning" (click)="openEditModal(barber)">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="action-btn danger" (click)="deleteBarber(barber.id)">
+                    <i class="fas fa-trash"></i> Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Edição -->
+  <div class="admin-modal" [class.active]="showEditModal">
+    <div class="modal-content">
+      <h3 class="modal-title">
+        <i class="fas fa-user-edit"></i> Editar Barbeiro
+      </h3>
+      
+      <form [formGroup]="editForm" (ngSubmit)="updateBarber()">
+        <div class="form-group">
+          <label>Nome:</label>
+          <input type="text" formControlName="nome">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="action-btn secondary" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="action-btn primary" [disabled]="editForm.invalid">
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
