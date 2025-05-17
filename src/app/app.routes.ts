@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-
 import { ServicesComponent } from './components/services1/services.component';
 import { BarberGuard } from './services/auth.guard';
 import { ContactComponent } from './components/contact/contact.component';

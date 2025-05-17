@@ -19,10 +19,11 @@
           Por favor, digite sua senha
         </div>
 
-        <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
+          <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
           <span *ngIf="!isLoading">Entrar</span>
           <span *ngIf="isLoading" class="loading-spinner"></span>
         </button>
+
         
         <p class="alternative-option">
           Ainda não tem uma conta? <a routerLink="/cadastro" class="register-link">Cadastre-se aqui</a>

@@ -23,30 +23,13 @@ interface AuthResponse {
 })
 export class AuthService {
   private currentUser: User | null = null;
-  private mockBarbers: User[] = [
-    {
-      id: 1,
-      name: 'Carlos Barbeiro',
-      email: 'barber1@example.com',
-      password: '123456',
-      phone: '(11) 9999-8888',
-      role: 'barber'
-    },
-    {
-      id: 2,
-      name: 'João Barbeiro',
-      email: 'barber2@example.com',
-      password: '123456',
-      phone: '(11) 7777-6666',
-      role: 'barber'
-    }
-  ];
 
   constructor(private router: Router) {
     this.initializeMockData();
     this.loadUserFromStorage();
   }
 
+  // Método de login
   login(email: string, password: string): Observable<AuthResponse> {
     const response = this.handleLogin(email, password);
     return of(response).pipe(
@@ -56,6 +39,20 @@ export class AuthService {
           this.currentUser = res.user;
           localStorage.setItem('currentUser', JSON.stringify(res.user));
           this.redirectBasedOnRole(res.user.role);
+        }
+      })
+    );
+  }
+
+  // Método de registro
+  register(userData: Omit<User, 'id' | 'role'>): Observable<AuthResponse> {
+    return of(this.handleRegister(userData)).pipe(
+      delay(500),
+      tap(response => {
+        if (response.success && response.user) {
+          this.currentUser = response.user;
+          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.redirectBasedOnRole(response.user.role);
         }
       })
     );
@@ -81,10 +78,17 @@ export class AuthService {
 
   private initializeMockData(): void {
     if (!localStorage.getItem('users')) {
-      const mockUsers = [
-        ...this.mockBarbers,
+      const mockUsers: User[] = [
         {
-          id: 3,
+          id: 1,
+          name: 'Carlos Barbeiro',
+          email: 'barber@example.com',
+          password: '@teste@TESTE1234',
+          phone: '(11) 9999-8888',
+          role: 'barber'
+        },
+        {
+          id: 2,
           name: 'Cliente Teste',
           email: 'client@example.com',
           password: '123456',
@@ -100,27 +104,63 @@ export class AuthService {
     const users = this.getUsers();
     const user = users.find(u => 
       u.email === email && 
-      u.password === password && 
-      u.role === 'barber'
+      u.password === password
     );
 
-    return user 
-      ? { success: true, user }
-      : { success: false, message: 'Credenciais inválidas ou acesso não autorizado' };
+    if (!user) {
+      return { success: false, message: 'Credenciais inválidas' };
+    }
+
+    return { success: true, user };
+  }
+
+  private handleRegister(userData: Omit<User, 'id' | 'role'>): AuthResponse {
+    const users = this.getUsers();
+    
+    if (users.some(u => u.email === userData.email)) {
+      return { success: false, message: 'Este e-mail já está cadastrado' };
+    }
+
+    const newUser: User = {
+      id: this.generateId(users),
+      ...userData,
+      role: 'client' // Todos os novos registros são clientes por padrão
+    };
+
+    localStorage.setItem('users', JSON.stringify([...users, newUser]));
+    
+    return { success: true, user: newUser };
   }
 
   private redirectBasedOnRole(role: 'client' | 'barber'): void {
-    role === 'barber'
-      ? this.router.navigate(['/barber'])
-      : this.router.navigate(['/user']);
+    const targetRoute = role === 'barber' ? '/barber' : '/user';
+    this.router.navigate([targetRoute]);
   }
 
   private getUsers(): User[] {
     return JSON.parse(localStorage.getItem('users') || '[]');
   }
 
+  private generateId(users: User[]): number {
+    return users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+  }
+
   private loadUserFromStorage(): void {
     const user = localStorage.getItem('currentUser');
     this.currentUser = user ? JSON.parse(user) : null;
+  }
+
+  // Método para ADMIN criar barbeiros (apenas para desenvolvimento)
+  createBarber(barberData: Omit<User, 'id'>): Observable<AuthResponse> {
+    const users = this.getUsers();
+    const newBarber: User = {
+      id: this.generateId(users),
+      ...barberData,
+      role: 'barber'
+    };
+
+    localStorage.setItem('users', JSON.stringify([...users, newBarber]));
+    
+    return of({ success: true, user: newBarber }).pipe(delay(500));
   }
 }

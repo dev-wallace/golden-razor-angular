@@ -1,5 +1,3 @@
-
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -15,9 +13,25 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  loginForm = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+  // Atualizar os nomes dos controles
+  registerForm = new FormGroup({
+    name: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.pattern(/^[A-Za-zÀ-ÿ\s]+$/)
+    ]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.email
+    ]),
+    phone: new FormControl('', [
+      Validators.pattern(/^\d{11}$/)
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
+    ])
   });
 
   isLoading = false;
@@ -28,33 +42,37 @@ export class RegisterComponent {
     private snackBar: MatSnackBar
   ) {}
 
- onSubmit() {
-  if (this.loginForm.valid) {
-    this.isLoading = true;
-    const { email, password } = this.loginForm.value;
+  onSubmit() {
+    if (this.registerForm.valid) {
+      this.isLoading = true;
+      const formValue = this.registerForm.value;
+      
+      // Ajustar para os novos nomes dos campos
+      const userData = {
+        name: formValue.name!,
+        email: formValue.email!,
+        phone: formValue.phone ?? undefined,
+        password: formValue.password!,
+      };
 
-    this.authService.login(email!, password!).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.success && response.user) {
-          // Redirecionar baseado no tipo de usuário
-          if (response.user.role === 'barber') {
-            this.router.navigate(['/barber']);
+      this.authService.register(userData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.snackBar.open('Cadastro realizado com sucesso!', 'Fechar', { duration: 3000 });
+            this.router.navigate(['/login']);
           } else {
-            this.router.navigate(['/user']);
+            this.showError(response.message || 'Erro ao cadastrar');
           }
-        } else {
-          this.showError(response.message || 'Credenciais inválidas');
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.showError('Erro ao tentar cadastrar');
+          console.error('Register error:', err);
         }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        this.showError('Erro ao tentar fazer login');
-        console.error('Login error:', err);
-      }
-    });
+      });
+    }
   }
-}
 
   private showError(message: string): void {
     this.snackBar.open(message, 'Fechar', {
