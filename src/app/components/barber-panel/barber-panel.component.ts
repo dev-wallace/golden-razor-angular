@@ -1,91 +1,228 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AuthService, User } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-barber-panel',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, FontAwesomeModule],
   templateUrl: './barber-panel.component.html',
-  styleUrls: ['./barber-panel.component.scss'] 
+  styleUrls: ['./barber-panel.component.scss']
 })
-export class BarberPanelComponent {
-  // Dados iniciais
-  clients = [
-    { id: 1, nome: 'João Silva', email: 'joao@email.com', telefone: '(11) 9999-8888' },
-    { id: 2, nome: 'Maria Souza', email: 'maria@email.com', telefone: '(11) 7777-6666' }
-  ];
+export class BarberPanelComponent implements OnInit {
+  clients: User[] = [];
+  barbers: User[] = [];
+  isLoadingClients = true;
+  isLoadingBarbers = true;
+  isSubmitting = false;
 
-  barbers = [
-    { id: 1, nome: 'Carlos Barbosa' },
-    { id: 2, nome: 'Pedro Almeida' }
-  ];
-
-  // Formulários
+  // Formulários para Barbeiros
   barberForm: FormGroup;
   editForm: FormGroup;
-
-  // Controles de UI
+  
+  // Formulários para Clientes (NOVO)
+  clientEditForm: FormGroup;
+  
+  // Controles de Modais
   showEditModal = false;
-  currentBarber: any = null;
+  showClientEditModal = false; // NOVO
+  currentBarber: User | null = null;
+  currentClient: User | null = null; // NOVO
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {
+    // Formulário de Criação de Barbeiros
     this.barberForm = this.fb.group({
-      nome: ['', Validators.required]
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      phone: ['']
     });
 
+    // Formulário de Edição de Barbeiros
     this.editForm = this.fb.group({
-      id: [''],
-      nome: ['', Validators.required]
+      id: [0],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['']
+    });
+
+    // NOVO: Formulário de Edição de Clientes
+    this.clientEditForm = this.fb.group({
+      id: [0],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['']
     });
   }
 
-  // Operações CRUD
-  addBarber() {
-    if (this.barberForm.valid) {
-      const newBarber = {
-        id: this.generateNewId(),
-        ...this.barberForm.value
-      };
-      this.barbers = [...this.barbers, newBarber];
-      this.barberForm.reset();
-    }
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  deleteBarber(id: number) {
-    this.barbers = this.barbers.filter(b => b.id !== id);
+  private loadData(): void {
+    this.loadClients();
+    this.loadBarbers();
   }
 
-  deleteClient(id: number) {
-    this.clients = this.clients.filter(c => c.id !== id);
+  private loadClients(): void {
+    this.isLoadingClients = true;
+    this.authService.getClients().pipe(
+      finalize(() => this.isLoadingClients = false)
+    ).subscribe({
+      next: (clients) => this.clients = clients,
+      error: () => this.showError('Falha ao carregar clientes')
+    });
   }
 
-  openEditModal(barber: any) {
+  private loadBarbers(): void {
+    this.isLoadingBarbers = true;
+    this.authService.getBarbeiros().pipe(
+      finalize(() => this.isLoadingBarbers = false)
+    ).subscribe({
+      next: (barbers) => this.barbers = barbers,
+      error: () => this.showError('Falha ao carregar barbeiros')
+    });
+  }
+
+  // Métodos para Barbeiros
+  addBarber(): void {
+    if (this.barberForm.invalid || this.isSubmitting) return;
+
+    this.isSubmitting = true;
+    const newBarber: User = {
+      ...this.barberForm.value,
+      role: 'barber'
+    };
+
+    this.authService.manageBarber(newBarber, 'create').pipe(
+      finalize(() => this.isSubmitting = false)
+    ).subscribe({
+      next: () => {
+        this.snackBar.open('Barbeiro cadastrado com sucesso!', 'Fechar', { duration: 3000 });
+        this.barberForm.reset();
+        this.loadBarbers();
+      },
+      error: (error) => this.showError(error.message || 'Erro no cadastro')
+    });
+  }
+
+  deleteBarber(barberId: number): void {
+    const confirmation = confirm('Tem certeza que deseja excluir este barbeiro?');
+    if (!confirmation) return;
+
+    this.authService.manageBarber({ id: barberId } as User, 'delete').subscribe({
+      next: () => {
+        this.snackBar.open('Barbeiro removido!', 'Fechar', { duration: 3000 });
+        this.loadBarbers();
+      },
+      error: (error) => this.showError(error.message || 'Erro na exclusão')
+    });
+  }
+
+  // Métodos para Clientes (ATUALIZADOS)
+  deleteClient(clientId: number): void {
+    const confirmation = confirm('Tem certeza que deseja excluir este cliente?');
+    if (!confirmation) return;
+
+    this.authService.manageClient({ id: clientId } as User, 'delete').subscribe({
+      next: () => {
+        this.snackBar.open('Cliente removido!', 'Fechar', { duration: 3000 });
+        this.loadClients();
+      },
+      error: (error) => this.showError(error.message || 'Erro na exclusão')
+    });
+  }
+
+  openClientEditModal(client: User): void { // NOVO
+    this.currentClient = client;
+    this.clientEditForm.patchValue({
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      phone: client.phone || ''
+    });
+    this.showClientEditModal = true;
+  }
+
+  updateClient(): void { // NOVO
+    if (this.clientEditForm.invalid || !this.currentClient || this.isSubmitting) return;
+
+    this.isSubmitting = true;
+    const updatedClient: User = {
+      ...this.currentClient,
+      ...this.clientEditForm.value
+    };
+
+    this.authService.manageClient(updatedClient, 'update').pipe(
+      finalize(() => this.isSubmitting = false)
+    ).subscribe({
+      next: () => {
+        this.snackBar.open('Cliente atualizado!', 'Fechar', { duration: 3000 });
+        this.closeClientModal();
+        this.loadClients();
+      },
+      error: (error) => this.showError(error.message || 'Erro na atualização')
+    });
+  }
+
+  // Métodos Comuns
+  openEditModal(barber: User): void {
     this.currentBarber = barber;
-    this.editForm.patchValue(barber);
+    this.editForm.patchValue({
+      id: barber.id,
+      name: barber.name,
+      email: barber.email,
+      phone: barber.phone || ''
+    });
     this.showEditModal = true;
   }
 
-  updateBarber() {
-    if (this.editForm.valid) {
-      this.barbers = this.barbers.map(b => 
-        b.id === this.currentBarber.id ? this.editForm.value : b
-      );
-      this.closeModal();
-    }
+  updateBarber(): void {
+    if (this.editForm.invalid || !this.currentBarber || this.isSubmitting) return;
+
+    this.isSubmitting = true;
+    const updatedBarber: User = {
+      ...this.currentBarber,
+      ...this.editForm.value
+    };
+
+    this.authService.manageBarber(updatedBarber, 'update').pipe(
+      finalize(() => this.isSubmitting = false)
+    ).subscribe({
+      next: () => {
+        this.snackBar.open('Dados atualizados!', 'Fechar', { duration: 3000 });
+        this.closeModal();
+        this.loadBarbers();
+      },
+      error: (error) => this.showError(error.message || 'Erro na atualização')
+    });
   }
 
-  // Utilitários
-  private generateNewId(): number {
-    return this.barbers.length > 0 ? 
-      Math.max(...this.barbers.map(b => b.id)) + 1 : 1;
-  }
-
-  closeModal() {
+  closeModal(): void {
     this.showEditModal = false;
     this.currentBarber = null;
     this.editForm.reset();
+  }
+
+  closeClientModal(): void { // NOVO
+    this.showClientEditModal = false;
+    this.currentClient = null;
+    this.clientEditForm.reset();
+  }
+
+  private showError(message: string): void {
+    this.snackBar.open(message, 'Fechar', {
+      duration: 5000,
+      panelClass: ['error-snackbar']
+    });
   }
 }

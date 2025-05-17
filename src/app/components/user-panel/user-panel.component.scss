@@ -96,13 +96,13 @@
 .main-content {
   padding: 3rem;
   background: linear-gradient(
-      45deg, 
-      rgba(245, 245, 245, 0.95) 0%, 
-      rgba(255, 255, 255, 0.95) 100%
+    45deg, 
+    rgba(245, 245, 245, 0.95) 0%, 
+    rgba(255, 255, 255, 0.95) 100%
   );
   min-height: 100vh;
 
-  @include mobile {
+  @media (max-width: 768px) {
     padding: 1.5rem;
   }
 }
@@ -121,7 +121,7 @@
     box-shadow: 0 4px 25px rgba(204, 152, 39, 0.1);
   }
 
-  @include mobile {
+  @media (max-width: 768px) {
     padding: 1.5rem;
   }
 
@@ -135,7 +135,7 @@
     align-items: center;
     gap: 10px;
 
-    @include mobile {
+    @media (max-width: 768px) {
       font-size: 1.4rem;
     }
 
@@ -192,9 +192,9 @@
 /* Botões */
 .btn-primary {
   background: linear-gradient(
-      135deg, 
-      var(--cor-de-button) 0%, 
-      darken(#cc9827, 10%) 100%
+    135deg, 
+    var(--cor-de-button) 0%, 
+    darken(#cc9827, 10%) 100%
   );
   color: var(--cor-de-link);
   padding: 0.9rem 2rem;
@@ -357,12 +357,43 @@
       display: flex;
       justify-content: flex-end;
       gap: 1rem;
+
+      .action-btn {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        gap: 0.5rem;
+
+        &.primary {
+          background: var(--cor-de-button);
+          color: #000;
+          border-color: var(--cor-de-button);
+        }
+
+        &.secondary {
+          background: rgba(var(--cor-de-button), 0.1);
+          color: var(--cor-de-button);
+          border-color: var(--cor-de-button);
+        }
+
+        &.warning {
+          background: rgba(255, 193, 7, 0.1);
+          color: #ffc107;
+          border-color: #ffc107;
+        }
+
+        &.danger {
+          background: rgba(220, 53, 69, 0.1);
+          color: #dc3545;
+          border-color: #dc3545;
+        }
+      }
     }
   }
 }
 
 /* Responsividade */
-@include mobile {
+@media (max-width: 768px) {
   .sidebar {
     padding: 1.5rem;
 
