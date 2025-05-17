@@ -30,28 +30,33 @@ export class LoginComponent {
     private snackBar: MatSnackBar
   ) {}
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      const { email, password } = this.loginForm.value;
+ onSubmit() {
+  if (this.loginForm.valid) {
+    this.isLoading = true;
+    const { email, password } = this.loginForm.value;
 
-      this.authService.login(email!, password!).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            this.router.navigate(['/user']); // Ou '/area-do-usuario'
+    this.authService.login(email!, password!).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success && response.user) {
+          // Verifica o tipo de usuário
+          if (response.user.role === 'barber') {
+            this.router.navigate(['/barber']);
           } else {
-            this.showError(response.message || 'Email ou senha incorretos');
+            this.router.navigate(['/user']);
           }
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.showError('Erro ao tentar fazer login');
-          console.error('Login error:', err);
+        } else {
+          this.showError(response.message || 'Credenciais inválidas');
         }
-      });
-    }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showError('Erro ao tentar fazer login');
+        console.error('Login error:', err);
+      }
+    });
   }
+}
 
   private showError(message: string): void {
     this.snackBar.open(message, 'Fechar', {

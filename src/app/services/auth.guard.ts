@@ -6,16 +6,14 @@ import { AuthService } from '../services/auth.service';
   providedIn: 'root'
 })
 export class BarberGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): boolean {
-    if (this.authService.isBarber()) {
+    if (this.auth.isBarber()) {
       return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
     }
-    this.router.navigate(['/login']);
-    return false;
   }
 }

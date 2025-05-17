@@ -42,42 +42,41 @@ export class RegisterComponent {
     private snackBar: MatSnackBar
   ) {}
 
-  onSubmit() {
-    if (this.registerForm.valid) {
-      this.isLoading = true;
-      const formValue = this.registerForm.value;
-      
-      // Ajustar para os novos nomes dos campos
-      const userData = {
-        name: formValue.name!,
-        email: formValue.email!,
-        phone: formValue.phone ?? undefined,
-        password: formValue.password!,
-      };
+ onSubmit() {
+  if (this.registerForm.valid) {
+    this.isLoading = true;
+    const formValue = this.registerForm.value;
+    
+    const userData = {
+      name: formValue.name!,
+      email: formValue.email!,
+      phone: formValue.phone ?? undefined,
+      password: formValue.password!,
+    };
 
-      this.authService.register(userData).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            this.snackBar.open('Cadastro realizado com sucesso!', 'Fechar', { duration: 3000 });
-            this.router.navigate(['/login']);
-          } else {
-            this.showError(response.message || 'Erro ao cadastrar');
-          }
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.showError('Erro ao tentar cadastrar');
-          console.error('Register error:', err);
+    this.authService.register(userData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success) {
+          this.snackBar.open('Cadastro realizado com sucesso!', 'Fechar', { duration: 3000 });
+          this.router.navigate(['/login']);
+        } else {
+          this.showError(response.message || 'Erro ao cadastrar');
         }
-      });
-    }
-  }
-
-  private showError(message: string): void {
-    this.snackBar.open(message, 'Fechar', {
-      duration: 5000,
-      panelClass: ['error-snackbar']
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showError('Erro ao tentar cadastrar');
+        console.error('Register error:', err);
+      }
     });
   }
+}
+
+private showError(message: string): void {
+  this.snackBar.open(message, 'Fechar', {
+    duration: 5000,
+    panelClass: ['error-snackbar']
+  });
+}
 }

@@ -11,11 +11,12 @@ import { BarberPanelComponent } from './components/barber-panel/barber-panel.com
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'servicos', component: ServicesComponent },
- { 
-    path: 'barber', 
-    component: BarberPanelComponent,
-    canActivate: [BarberGuard] // Proteger a rota
-  },
+ 
+{ 
+  path: 'barber', 
+  component: BarberPanelComponent,
+  canActivate: [BarberGuard] 
+},
   { path: 'contato', component: ContactComponent },
   { path: 'login', component: LoginComponent },
   {path: 'barber', component: BarberPanelComponent},
