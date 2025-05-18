@@ -77,3 +77,22 @@ Bem-vindo ao repositório da **Golden Razor**, uma aplicação desenvolvida com 
 ![Screenshot 2025-05-18 125949](https://github.com/user-attachments/assets/c253dd5a-57d8-489b-ad96-62238481f3c6)
 ![Screenshot 2025-05-18 125915](https://github.com/user-attachments/assets/e8352cbb-8454-4e18-89dd-52ebbf6aae26)
 
+
+---
+
+## 📝 Como executar
+
+```bash
+# Instale as dependências
+npm install
+
+# Inicie a aplicação Angular
+ng serve
+
+# Acesse via navegador
+http://localhost:4200
+
+# Opcional: Inicie o JSON Server (caso esteja usando db.json)
+json-server --watch db.json --port 3000
+
+
