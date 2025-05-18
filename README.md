@@ -1,5 +1,10 @@
 # 💈 Golden Razor - Sistema de Agendamentos
+**Projeto desenvolvido como trabalho acadêmico para a faculdade**  
 
+### Créditos de Desenvolvimento  
+- **Design, HTML e CSS**: [Filipe](https://github.com/Lipeh011) (colega de equipe)  
+- **Conversão para Angular e Back-End**: Minha responsabilidade
+  
 Bem-vindo ao repositório da **Golden Razor**, uma aplicação desenvolvida com Angular para gerenciar clientes, barbeiros e agendamentos em uma barbearia moderna. O sistema é dividido em dois painéis distintos: o **Painel do Usuário (Cliente)** e o **Painel do Barbeiro (Administração)**.
 
 
